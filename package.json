@@ -8,6 +8,9 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "", 
-  "type": "module"
+  "description": "",
+  "type": "module",
+  "dependencies": {
+    "dotenv": "^16.4.7"
+  }
 }
