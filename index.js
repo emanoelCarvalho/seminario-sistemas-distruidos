@@ -18,37 +18,6 @@ const model = apiKey.getGenerativeModel({
 app.use(cors());
 app.use(bodyParser.json());
 
-// async function generateItinerary(data) {
-//   try {
-//     const { destination, activities, preferences } = data;
-
-//     const prompt = `
-//       Crie um roteiro de viagem personalizado para o seguinte destino: ${destination}.
-//       Inclua atividades como: ${activities.join(", ")}.
-//       Preferências do viajante: ${preferences}.
-//       Forneça um roteiro detalhado com horários, sugestões de transporte, locais para refeições e pontos turísticos.
-//     `;
-
-//     const result = await model.generateContent([prompt]);
-
-//     if (!result || !result.response) {
-//       throw new Error("Resposta da API veio vazia ou inválida.");
-//     }
-
-//     const responseText = result.response.text();
-//     console.log("Roteiro Gerado:\n", responseText);
-
-//     // Criar e salvar arquivo com o roteiro
-//     const filePath = path.join(__dirname, "roteiro_viagem.txt");
-//     fs.writeFileSync(filePath, responseText, "utf-8");
-
-//     return filePath;
-//   } catch (error) {
-//     console.error("Erro ao gerar roteiro:", error.message);
-//     throw error;
-//   }
-// }
-
 app.post("/generate-itinerary", async (req, res) => {
   try {
     const { destination, activities, preferences } = req.body;
