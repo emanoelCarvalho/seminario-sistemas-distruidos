@@ -1,74 +1,68 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Roteiro Personalizado</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-    }
-    select, button {
-      margin: 10px 0;
-      padding: 10px;
-      font-size: 16px;
-    }
-  </style>
-</head>
-<body>
-  <h1>Criação de Roteiro Personalizado</h1>
-  <form id="itineraryForm">
-    <label for="destination">Destino:</label>
-    <select id="destination">
-      <option value="Paris">Paris</option>
-      <option value="Nova York">Nova York</option>
-      <option value="Tóquio">Tóquio</option>
-    </select>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gerador de Roteiro de Viagem</title>
+  </head>
+  <body>
+    <h1>Criação de Roteiro de Viagem</h1>
 
-    <label for="activities">Atividades:</label>
-    <select id="activities">
-      <option value="Museus e monumentos">Museus e monumentos</option>
-      <option value="Natureza e trilhas">Natureza e trilhas</option>
-      <option value="Compras e gastronomia">Compras e gastronomia</option>
-    </select>
+    <form id="itineraryForm">
+      <label for="destination">Destino:</label>
+      <input type="text" id="destination" name="destination" required />
 
-    <label for="preferences">Preferências:</label>
-    <select id="preferences">
-      <option value="Viagem relaxante">Viagem relaxante</option>
-      <option value="Exploração cultural">Exploração cultural</option>
-      <option value="Aventura intensa">Aventura intensa</option>
-    </select>
+      <label for="activities">Atividades (separadas por vírgula):</label>
+      <input type="text" id="activities" name="activities" required />
 
-    <button type="submit">Gerar Roteiro</button>
-  </form>
+      <label for="preferences">Preferências:</label>
+      <input type="text" id="preferences" name="preferences" required />
 
-  <script>
-    const form = document.getElementById("itineraryForm");
+      <button type="submit">Gerar Roteiro</button>
+    </form>
 
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
+    <p id="status"></p>
 
-      const destination = document.getElementById("destination").value;
-      const activities = document.getElementById("activities").value;
-      const preferences = document.getElementById("preferences").value;
+    <script>
+      document
+        .getElementById("itineraryForm")
+        .addEventListener("submit", async function (event) {
+          event.preventDefault();
 
-      const response = await fetch("http://localhost:3000/generate-itinerary", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ destination, activities, preferences }),
-      });
+          const destination = document.getElementById("destination").value;
+          const activities = document
+            .getElementById("activities")
+            .value.split(",");
+          const preferences = document.getElementById("preferences").value;
 
-      if (response.ok) {
-        const blob = await response.blob();
-        const link = document.createElement("a");
-        link.href = window.URL.createObjectURL(blob);
-        link.download = "itinerary.txt";
-        link.click();
-      } else {
-        alert("Erro ao gerar o roteiro.");
-      }
-    });
-  </script>
-</body>
+          const response = await fetch(
+            "http://localhost:3000/generate-itinerary",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ destination, activities, preferences }),
+            }
+          );
+
+          if (response.ok) {
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "roteiro_viagem.txt";
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            document.getElementById("status").textContent =
+              "Roteiro gerado com sucesso!";
+          } else {
+            document.getElementById("status").textContent =
+              "Erro ao gerar roteiro!";
+          }
+        });
+    </script>
+  </body>
 </html>
+  

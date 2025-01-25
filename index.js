@@ -1,9 +1,9 @@
 import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
-
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import * as fs from "fs";
+import path from "path";
 
 const app = express();
 const PORT = 3000;
@@ -18,39 +18,92 @@ const model = apiKey.getGenerativeModel({
 app.use(cors());
 app.use(bodyParser.json());
 
-async function generateItinerary() {
+// async function generateItinerary(data) {
+//   try {
+//     const { destination, activities, preferences } = data;
+
+//     const prompt = `
+//       Crie um roteiro de viagem personalizado para o seguinte destino: ${destination}.
+//       Inclua atividades como: ${activities.join(", ")}.
+//       Preferências do viajante: ${preferences}.
+//       Forneça um roteiro detalhado com horários, sugestões de transporte, locais para refeições e pontos turísticos.
+//     `;
+
+//     const result = await model.generateContent([prompt]);
+
+//     if (!result || !result.response) {
+//       throw new Error("Resposta da API veio vazia ou inválida.");
+//     }
+
+//     const responseText = result.response.text();
+//     console.log("Roteiro Gerado:\n", responseText);
+
+//     // Criar e salvar arquivo com o roteiro
+//     const filePath = path.join(__dirname, "roteiro_viagem.txt");
+//     fs.writeFileSync(filePath, responseText, "utf-8");
+
+//     return filePath;
+//   } catch (error) {
+//     console.error("Erro ao gerar roteiro:", error.message);
+//     throw error;
+//   }
+// }
+
+app.post("/generate-itinerary", async (req, res) => {
   try {
+    const { destination, activities, preferences } = req.body;
+
+    if (!destination || !activities || !preferences) {
+      return res.status(400).send("Todos os campos são obrigatórios.");
+    }
+
+    // Garantir que activities seja um array
+    const activitiesList = Array.isArray(activities)
+      ? activities.join(", ")
+      : activities;
+
     const prompt = `
-        Crie um roteiro de viagem personalizado para o seguinte destino: Nova York.
-        Inclua atividades como: Natureza e trilhas.
-        Preferências do viajante: Viagem relaxante.
-        Forneça um roteiro detalhado com horários, sugestões de transporte, locais para refeições e pontos turísticos.
-      `;
+      Crie um roteiro de viagem personalizado para o seguinte destino: ${destination}.
+      Inclua atividades como: ${activitiesList}.
+      Preferências do viajante: ${preferences}.
+      Forneça um roteiro detalhado com horários, sugestões de transporte, locais para refeições e pontos turísticos.
+    `;
 
     const result = await model.generateContent([prompt]);
 
-    // Adicione verificações antes de acessar `.text()`
     if (!result || !result.response) {
       throw new Error("Resposta da API veio vazia ou inválida.");
     }
 
-    const responseText = result.response.text(); // Pode lançar erro se estiver indefinido
-    console.log("Roteiro Gerado:\n", responseText);
-  } catch (error) {
-    console.error("Erro ao gerar roteiro:", error.message);
-  }
-}
+    const responseText = result.response.text();
 
-generateItinerary();
-app.post("/generate-itinerary", async (req, res) => {
-  try {
-    const filePath = await generateItinerary(req.body);
-    res.download(filePath, "itinerary.txt", () => {
-      fs.unlinkSync(filePath);
+    // Criar conteúdo Markdown formatado
+    const markdownContent = `# Roteiro de Viagem para ${destination}
+
+## 📍 Destino
+${destination}
+
+## 🎯 Atividades
+${activitiesList}
+
+## 🏖️ Preferências do Viajante
+${preferences}
+
+---
+
+${responseText}
+`;
+
+    // Criar arquivo Markdown
+    const filePath = "./itinerary.md";
+    fs.writeFileSync(filePath, markdownContent);
+
+    res.download(filePath, "roteiro_viagem.md", () => {
+      fs.unlinkSync(filePath); // Remove o arquivo após o download
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).send("Internal server error");
+    console.error("Erro ao gerar roteiro:", error.message);
+    res.status(500).send("Erro interno do servidor.");
   }
 });
 
