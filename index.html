@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Roteiro Personalizado</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    select, button {
+      margin: 10px 0;
+      padding: 10px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Criação de Roteiro Personalizado</h1>
+  <form id="itineraryForm">
+    <label for="destination">Destino:</label>
+    <select id="destination">
+      <option value="Paris">Paris</option>
+      <option value="Nova York">Nova York</option>
+      <option value="Tóquio">Tóquio</option>
+    </select>
+
+    <label for="activities">Atividades:</label>
+    <select id="activities">
+      <option value="Museus e monumentos">Museus e monumentos</option>
+      <option value="Natureza e trilhas">Natureza e trilhas</option>
+      <option value="Compras e gastronomia">Compras e gastronomia</option>
+    </select>
+
+    <label for="preferences">Preferências:</label>
+    <select id="preferences">
+      <option value="Viagem relaxante">Viagem relaxante</option>
+      <option value="Exploração cultural">Exploração cultural</option>
+      <option value="Aventura intensa">Aventura intensa</option>
+    </select>
+
+    <button type="submit">Gerar Roteiro</button>
+  </form>
+
+  <script>
+    const form = document.getElementById("itineraryForm");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const destination = document.getElementById("destination").value;
+      const activities = document.getElementById("activities").value;
+      const preferences = document.getElementById("preferences").value;
+
+      const response = await fetch("http://localhost:3000/generate-itinerary", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ destination, activities, preferences }),
+      });
+
+      if (response.ok) {
+        const blob = await response.blob();
+        const link = document.createElement("a");
+        link.href = window.URL.createObjectURL(blob);
+        link.download = "itinerary.txt";
+        link.click();
+      } else {
+        alert("Erro ao gerar o roteiro.");
+      }
+    });
+  </script>
+</body>
+</html>
