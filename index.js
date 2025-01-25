@@ -3,14 +3,15 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import * as fs from "fs";
-import path from "path";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const app = express();
 const PORT = 3000;
 
-const apiKey = new GoogleGenerativeAI(
-  "AIzaSyBIgCe5nDp3XAfD1ljb-rCBaM2K0uE3iIc"
-);
+const apiKey = new GoogleGenerativeAI(process.env.APIKEY);
+console.log(apiKey)
 const model = apiKey.getGenerativeModel({
   model: "gemini-1.5-flash",
 });
