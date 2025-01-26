@@ -11,7 +11,6 @@ const app = express();
 const PORT = 3000;
 
 const apiKey = new GoogleGenerativeAI(process.env.APIKEY);
-console.log(apiKey)
 const model = apiKey.getGenerativeModel({
   model: "gemini-1.5-flash",
 });
