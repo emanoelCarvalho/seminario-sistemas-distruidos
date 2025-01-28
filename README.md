@@ -92,4 +92,3 @@ Este software é de propriedade exclusiva dos autores e **não pode ser copiado,
 
 ---
 ✨ Desenvolvido por **Hemanoel Carvalho** e **Cleiton Lucas** 🚀
-```
