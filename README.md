@@ -84,11 +84,11 @@ Este é um projeto privado. O código não está disponível para contribuiçõe
 
 ## 🧑‍💻 Autores
 
-- **Hemanoel Carvalho** - [GitHub](https://github.com/emanoelCarvalho)
+- **Emanoel Carvalho** - [GitHub](https://github.com/emanoelCarvalho)
 - **Cleiton Lucas** - [GitHub](https://github.com/CleitonLucas)
 
 ## 🔒 Licença Privada
 Este software é de propriedade exclusiva dos autores e **não pode ser copiado, distribuído ou utilizado sem permissão explícita**. Qualquer uso indevido será passível de medidas legais.
 
 ---
-✨ Desenvolvido por **Hemanoel Carvalho** e **Cleiton Lucas** 🚀
+✨ Desenvolvido por **Emanoel Carvalho** e **Cleiton Lucas** 🚀
